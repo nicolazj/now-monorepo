@@ -1,0 +1,41 @@
+{
+  "version": 2,
+  "name": "mono",
+  "builds": [
+    { "src": "packages/my-server/**/*.js", "use": "@now/node" },
+    {
+      "src": "packages/my-app/package.json",
+      "use": "@now/static-build",
+      "config": { "distDir": "build" }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/packages/my-server/$1",
+      "headers": {
+        "Access-Control-Allow-Origin": "*"
+      }
+    },
+
+    {
+      "src": "/static/(.*)",
+      "headers": { "cache-control": "s-maxage=31536000,immutable" },
+      "dest": "/packages/my-app/static/$1"
+    },
+    { "src": "/favicon.ico", "dest": "/packages/my-app/favicon.ico" },
+    { "src": "/asset-manifest.json", "dest": "/packages/my-app/asset-manifest.json" },
+    { "src": "/manifest.json", "dest": "/packages/my-app/manifest.json" },
+    { "src": "/precache-manifest.(.*)", "dest": "/packages/my-app/precache-manifest.$1" },
+    {
+      "src": "/service-worker.js",
+      "headers": { "cache-control": "s-maxage=0" },
+      "dest": "/packages/my-app/service-worker.js"
+    },
+    {
+      "src": "/(.*)",
+      "headers": { "cache-control": "s-maxage=0" },
+      "dest": "/packages/my-app/index.html"
+    }
+  ]
+}
